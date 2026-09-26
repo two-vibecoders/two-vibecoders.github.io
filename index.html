@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>two-vibecoders · Bus Cursor</title>
+  <meta name="description" content="Bus Cursor - адаптация jtapés/claude-bus под Cursor IDE (SafonovAG / two-vibecoders)." />
+  <link rel="icon" href="https://raw.githubusercontent.com/two-vibecoders/bus-cursor/master/assets/bus.svg" type="image/svg+xml" />
+  <style>
+    :root {
+      --bg: #0e0e10;
+      --panel: #161618;
+      --ink: #e8e8ea;
+      --muted: #8b8b90;
+      --line: #ffffff14;
+      --accent: #5ac8c8;
+      --accent-dim: color-mix(in srgb, #5ac8c8 18%, transparent);
+      --font: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+      --mono: "Cascadia Mono", Consolas, ui-monospace, monospace;
+      --ease: cubic-bezier(.2, .7, .2, 1);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; font: 15px/1.55 var(--font); color: var(--ink);
+      background: radial-gradient(900px 500px at 20% -10%, #1a2a2a 0%, transparent 55%),
+                  radial-gradient(700px 400px at 100% 0%, #1a1830 0%, transparent 50%),
+                  var(--bg);
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { width: min(880px, calc(100% - 32px)); margin: 0 auto; padding: 48px 0 80px; }
+    header { text-align: center; margin-bottom: 40px; }
+    .logo {
+      width: 112px; height: 112px; border-radius: 28px; display: block; margin: 0 auto 16px;
+      box-shadow: 0 12px 40px -16px #000a, 0 0 0 1px var(--line);
+    }
+    h1 { margin: 0 0 8px; font: 700 28px/1.2 var(--font); letter-spacing: -0.02em; }
+    .tag { color: var(--muted); margin: 0 0 16px; }
+    .views { margin: 12px 0 20px; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 10px;
+      border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-weight: 600;
+      transition: border-color .2s var(--ease), background .2s var(--ease), transform .15s var(--ease);
+    }
+    .btn:hover { border-color: var(--accent); background: var(--accent-dim); text-decoration: none; transform: translateY(-1px); }
+    .btn.primary { background: var(--accent); color: #0e0e10; border-color: transparent; }
+    .btn.primary:hover { filter: brightness(1.06); background: var(--accent); }
+    .card {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+      padding: 20px 22px; margin-bottom: 16px;
+    }
+    .card h2 { margin: 0 0 12px; font: 650 15px/1.3 var(--font); color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px 18px; color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+    .meta b { color: var(--ink); font-weight: 600; }
+    .desc { margin: 0 0 8px; color: var(--ink); }
+    ul.commits { list-style: none; margin: 0; padding: 0; }
+    ul.commits li {
+      display: grid; grid-template-columns: 72px 1fr; gap: 10px; padding: 10px 0;
+      border-top: 1px solid var(--line); font-size: 14px;
+    }
+    ul.commits li:first-child { border-top: 0; }
+    .sha { font: 600 12px var(--mono); color: var(--accent); }
+    .msg { color: var(--ink); }
+    .when { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .install {
+      font: 13px/1.45 var(--mono); background: #0a0a0c; border: 1px solid var(--line);
+      border-radius: 12px; padding: 14px 16px; overflow-x: auto; color: #c8ecec; margin: 0;
+    }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .stat { text-align: center; padding: 14px 8px; border-radius: 12px; background: #121214; border: 1px solid var(--line); }
+    .stat strong { display: block; font-size: 22px; color: var(--accent); }
+    .stat span { font-size: 12px; color: var(--muted); }
+    .center { text-align: center; }
+    .center img { max-width: 100%; height: auto; }
+    footer { text-align: center; margin-top: 36px; color: var(--muted); font-size: 13px; }
+    .err { color: #f87171; font-size: 14px; }
+    @media (max-width: 560px) {
+      .stats { grid-template-columns: 1fr; }
+      ul.commits li { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <img class="logo" id="logo" src="https://raw.githubusercontent.com/two-vibecoders/bus-cursor/master/assets/bus.svg" alt="Bus Cursor" />
+      <h1>Bus Cursor</h1>
+      <p class="tag">Переписка и задачи между агентами Cursor</p>
+      <p class="views">
+        <img src="https://api.visitorbadge.io/api/visitors?path=github.com%2Ftwo-vibecoders%2Fbus-cursor&label=views&countColor=%235ac8c8&labelColor=%23374151&style=flat" alt="Просмотры bus-cursor" />
+      </p>
+      <div class="links">
+        <a class="btn primary" href="https://github.com/two-vibecoders/bus-cursor">Репозиторий</a>
+        <a class="btn" href="https://github.com/two-vibecoders/bus-cursor#установка">Установка</a>
+        <a class="btn" href="https://github.com/jtapes/claude-bus">Оригинал</a>
+        <a class="btn" href="https://github.com/SafonovAG">SafonovAG</a>
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>Происхождение</h2>
+      <p class="desc">
+        Оригинальный скилл -
+        <a href="https://github.com/jtapes/claude-bus">jtapes/claude-bus</a>
+        (Claude Code). Bus Cursor - адаптация под Cursor IDE от
+        <a href="https://github.com/SafonovAG">SafonovAG</a>.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Репозиторий</h2>
+      <p class="desc" id="repoDesc">Загрузка…</p>
+      <div class="meta" id="repoMeta"></div>
+      <div class="stats" id="repoStats">
+        <div class="stat"><strong id="stars">–</strong><span>stars</span></div>
+        <div class="stat"><strong id="forks">–</strong><span>forks</span></div>
+        <div class="stat"><strong id="issues">–</strong><span>issues</span></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Последние изменения</h2>
+      <ul class="commits" id="commits"><li class="err">Загрузка коммитов…</li></ul>
+    </section>
+
+    <section class="card">
+      <h2>Быстрый старт</h2>
+      <pre class="install">git clone https://github.com/two-vibecoders/bus-cursor.git "%USERPROFILE%\.cursor\skills\bus-cursor"
+node "%USERPROFILE%\.cursor\skills\bus-cursor\scripts\bus.js" setup
+node "%USERPROFILE%\.cursor\skills\bus-cursor\scripts\bus.js" ui --app</pre>
+    </section>
+
+    <section class="card center">
+      <h2>Профиль</h2>
+      <p>
+        <img src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=SafonovAG&theme=solarized_dark" alt="Profile details" />
+      </p>
+    </section>
+
+    <footer>
+      Оригинал <a href="https://github.com/jtapes/claude-bus">jtapes/claude-bus</a>
+      · адаптация под Cursor <a href="https://github.com/SafonovAG">SafonovAG</a>
+      · org <a href="https://github.com/two-vibecoders">two-vibecoders</a>
+    </footer>
+  </div>
+  <script>
+    const REPO = 'two-vibecoders/bus-cursor';
+    const fmt = (iso) => {
+      try {
+        return new Intl.DateTimeFormat('ru-RU', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(iso));
+      } catch { return iso; }
+    };
+    async function load() {
+      try {
+        const [repo, commits] = await Promise.all([
+          fetch(`https://api.github.com/repos/${REPO}`).then((r) => r.json()),
+          fetch(`https://api.github.com/repos/${REPO}/commits?per_page=8`).then((r) => r.json()),
+        ]);
+        if (repo.message) throw new Error(repo.message);
+        document.getElementById('repoDesc').textContent = repo.description || 'Bus Cursor';
+        document.getElementById('repoMeta').innerHTML =
+          `<span>язык: <b>${repo.language || '—'}</b></span>` +
+          `<span>обновлён: <b>${fmt(repo.updated_at)}</b></span>` +
+          `<span>лицензия: <b>${(repo.license && repo.license.spdx_id) || '—'}</b></span>`;
+        document.getElementById('stars').textContent = repo.stargazers_count;
+        document.getElementById('forks').textContent = repo.forks_count;
+        document.getElementById('issues').textContent = repo.open_issues_count;
+        if (repo.owner && repo.owner.avatar_url) {
+          /* keep bus logo */
+        }
+        const list = document.getElementById('commits');
+        if (!Array.isArray(commits) || !commits.length) {
+          list.innerHTML = '<li class="err">Коммитов пока нет</li>';
+          return;
+        }
+        list.innerHTML = commits.map((c) => {
+          const sha = (c.sha || '').slice(0, 7);
+          const msg = (c.commit && c.commit.message || '').split('\n')[0];
+          const when = c.commit && c.commit.author && c.commit.author.date;
+          const url = c.html_url;
+          return `<li>
+            <a class="sha" href="${url}">${sha}</a>
+            <div><div class="msg">${msg.replace(/[<>&]/g, (ch) => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[ch]))}</div>
+            <div class="when">${fmt(when)}</div></div>
+          </li>`;
+        }).join('');
+      } catch (e) {
+        document.getElementById('repoDesc').innerHTML = `<span class="err">${e.message}</span>`;
+        document.getElementById('commits').innerHTML = `<li class="err">${e.message}</li>`;
+      }
+    }
+    load();
+  </script>
+</body>
+</html>
