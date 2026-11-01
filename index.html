@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>two-vibecoders · Bus Claude & Bus Cursor</title>
-  <meta name="description" content="Файловая шина агентов: Bus Claude (Claude Code) и Bus Cursor (Cursor IDE). Организация two-vibecoders." />
+  <title>Bus Cursor · two-vibecoders</title>
+  <meta name="description" content="Bus Cursor - переписка, задачи и канбан для агентов Cursor IDE. Организация two-vibecoders." />
   <link rel="icon" href="https://raw.githubusercontent.com/two-vibecoders/bus-cursor/master/assets/bus.svg" type="image/svg+xml" />
   <style>
     :root {
-      --bg: #0e0e10;
-      --panel: #161618;
+      --bg: #0e1621;
+      --panel: #17212b;
       --ink: #e8e8ea;
       --muted: #8b8b90;
       --line: #ffffff14;
-      --accent: #5ac8c8;
-      --accent-dim: color-mix(in srgb, #5ac8c8 18%, transparent);
+      --accent: #6ab3f3;
+      --accent-dim: color-mix(in srgb, #6ab3f3 16%, transparent);
       --font: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
       --mono: "Cascadia Mono", Consolas, ui-monospace, monospace;
       --ease: cubic-bezier(.2, .7, .2, 1);
@@ -22,8 +22,8 @@
     * { box-sizing: border-box; }
     body {
       margin: 0; min-height: 100vh; font: 15px/1.55 var(--font); color: var(--ink);
-      background: radial-gradient(900px 500px at 20% -10%, #1a2a2a 0%, transparent 55%),
-                  radial-gradient(700px 400px at 100% 0%, #1a1830 0%, transparent 50%),
+      background: radial-gradient(900px 500px at 15% -10%, #1b2f45 0%, transparent 55%),
+                  radial-gradient(700px 400px at 100% 0%, #1f1d3a 0%, transparent 50%),
                   var(--bg);
     }
     a { color: var(--accent); text-decoration: none; }
@@ -34,120 +34,102 @@
       width: 112px; height: 112px; border-radius: 28px; display: block; margin: 0 auto 16px;
       box-shadow: 0 12px 40px -16px #000a, 0 0 0 1px var(--line);
     }
-    h1 { margin: 0 0 8px; font: 700 28px/1.2 var(--font); letter-spacing: -0.02em; }
-    .tag { color: var(--muted); margin: 0 0 16px; }
+    h1 { margin: 0 0 8px; font: 700 30px/1.2 var(--font); letter-spacing: -0.02em; }
+    .tag { color: var(--muted); margin: 0 0 18px; }
     .links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
     .btn {
-      display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 10px;
+      display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px;
       border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-weight: 600;
       transition: border-color .2s var(--ease), background .2s var(--ease), transform .15s var(--ease);
     }
     .btn:hover { border-color: var(--accent); background: var(--accent-dim); text-decoration: none; transform: translateY(-1px); }
-    .btn.primary { background: var(--accent); color: #0e0e10; border-color: transparent; }
+    .btn.primary { background: var(--accent); color: #0e1621; border-color: transparent; }
     .btn.primary:hover { filter: brightness(1.06); background: var(--accent); }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .card {
-      background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+      background: var(--panel); border: 1px solid var(--line); border-radius: 18px;
       padding: 20px 22px; margin-bottom: 16px;
     }
-    .grid .card { margin-bottom: 0; }
-    .card h2 { margin: 0 0 12px; font: 650 15px/1.3 var(--font); color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-    .card h3 { margin: 0 0 8px; font: 700 18px/1.3 var(--font); color: var(--ink); }
+    .card h2 { margin: 0 0 12px; font: 650 13px/1.3 var(--font); color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
     .meta { display: flex; flex-wrap: wrap; gap: 10px 18px; color: var(--muted); font-size: 13px; margin: 12px 0; }
     .meta b { color: var(--ink); font-weight: 600; }
     .desc { margin: 0 0 8px; color: var(--ink); }
+    .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 20px; margin: 0; padding: 0; list-style: none; }
+    .features li { padding-left: 18px; position: relative; }
+    .features li::before { content: ""; position: absolute; left: 0; top: .6em; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+    .features b { color: var(--ink); }
     .install {
-      font: 12px/1.45 var(--mono); background: #0a0a0c; border: 1px solid var(--line);
-      border-radius: 12px; padding: 14px 16px; overflow-x: auto; color: #c8ecec; margin: 12px 0 0;
+      font: 12px/1.45 var(--mono); background: #0a1018; border: 1px solid var(--line);
+      border-radius: 12px; padding: 14px 16px; overflow-x: auto; color: #cfe6fb; margin: 12px 0 0;
       white-space: pre-wrap;
     }
-    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
-    .stat { text-align: center; padding: 14px 8px; border-radius: 12px; background: #121214; border: 1px solid var(--line); }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px; }
+    .stat { text-align: center; padding: 14px 8px; border-radius: 12px; background: #121b25; border: 1px solid var(--line); }
     .stat strong { display: block; font-size: 22px; color: var(--accent); }
     .stat span { font-size: 12px; color: var(--muted); }
     footer { text-align: center; margin-top: 36px; color: var(--muted); font-size: 13px; }
     .err { color: #f87171; font-size: 14px; }
     @media (max-width: 700px) {
-      .grid { grid-template-columns: 1fr; }
-      .stats { grid-template-columns: 1fr; }
+      .features { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <img class="logo" src="https://raw.githubusercontent.com/two-vibecoders/bus-cursor/master/assets/bus.svg" alt="Bus" />
-      <h1>two-vibecoders</h1>
-      <p class="tag">Файловая шина агентов — одна идея, два скилла</p>
+      <img class="logo" src="https://raw.githubusercontent.com/two-vibecoders/bus-cursor/master/assets/bus.svg" alt="Bus Cursor" />
+      <h1>Bus Cursor</h1>
+      <p class="tag">Переписка, задачи и канбан для агентов Cursor IDE</p>
       <div class="links">
-        <a class="btn primary" href="https://github.com/two-vibecoders/bus-claude">Bus Claude</a>
-        <a class="btn primary" href="https://github.com/two-vibecoders/bus-cursor">Bus Cursor</a>
-        <a class="btn" href="https://github.com/two-vibecoders">Организация</a>
-        <a class="btn" href="https://github.com/jtapes/claude-bus">Оригинал</a>
+        <a class="btn primary" href="https://github.com/two-vibecoders/bus-cursor">Репозиторий</a>
+        <a class="btn" href="https://github.com/two-vibecoders/bus-cursor/releases">Релизы</a>
+        <a class="btn" href="https://github.com/two-vibecoders/bus-cursor#установка">Установка</a>
+        <a class="btn" href="https://github.com/two-vibecoders">two-vibecoders</a>
       </div>
     </header>
 
     <section class="card">
-      <h2>Идея</h2>
+      <h2>Что это</h2>
       <p class="desc">
-        Сообщения и задачи между агентами лежат во входящих, пока их не прочтут.
-        Адресация по имени, типы <code>TASK</code> / <code>QUESTION</code> / <code>DONE</code>, веб-UI и фоновый подъём.
-        Основа — <a href="https://github.com/jtapes/claude-bus">jtapes/claude-bus</a>
-        (<a href="https://github.com/jtapes">JTapes</a>);
-        org и порт под Cursor — <a href="https://github.com/SafonovAG">SafonovAG</a>.
+        Файловая шина между агентами Cursor и пользователем: сообщения и задачи лежат во входящих, пока их не прочтут.
+        Адресация по имени, типы <code>TASK</code> / <code>QUESTION</code> / <code>DONE</code>, локальный веб-UI и фоновый подъём агентов через Cursor CLI.
       </p>
-    </section>
-
-    <div class="grid">
-      <section class="card" id="cardClaude">
-        <h2>Claude Code</h2>
-        <h3>Bus Claude</h3>
-        <p class="desc" id="descClaude">Загрузка…</p>
-        <div class="meta" id="metaClaude"></div>
-        <div class="stats">
-          <div class="stat"><strong id="starsClaude">–</strong><span>stars</span></div>
-          <div class="stat"><strong id="forksClaude">–</strong><span>forks</span></div>
-          <div class="stat"><strong id="issuesClaude">–</strong><span>issues</span></div>
-        </div>
-        <p class="desc" style="margin-top:14px">Скилл: <code>~/.claude/skills/bus</code></p>
-        <div class="links" style="justify-content:flex-start;margin-top:12px">
-          <a class="btn" href="https://github.com/two-vibecoders/bus-claude">Репозиторий</a>
-        </div>
-      </section>
-
-      <section class="card" id="cardCursor">
-        <h2>Cursor IDE</h2>
-        <h3>Bus Cursor</h3>
-        <p class="desc" id="descCursor">Загрузка…</p>
-        <div class="meta" id="metaCursor"></div>
-        <div class="stats">
-          <div class="stat"><strong id="starsCursor">–</strong><span>stars</span></div>
-          <div class="stat"><strong id="forksCursor">–</strong><span>forks</span></div>
-          <div class="stat"><strong id="issuesCursor">–</strong><span>issues</span></div>
-        </div>
-        <p class="desc" style="margin-top:14px">Скилл: <code>~/.cursor/skills/bus-cursor</code></p>
-        <div class="links" style="justify-content:flex-start;margin-top:12px">
-          <a class="btn" href="https://github.com/two-vibecoders/bus-cursor">Репозиторий</a>
-          <a class="btn" href="https://github.com/two-vibecoders/bus-cursor#установка">Установка</a>
-        </div>
-      </section>
-    </div>
-
-    <section class="card">
-      <h2>Быстрый старт · Cursor</h2>
-      <pre class="install">git clone https://github.com/two-vibecoders/bus-cursor.git "%USERPROFILE%\.cursor\skills\bus-cursor"
-"%USERPROFILE%\.cursor\skills\bus-cursor\install.ps1"</pre>
+      <p class="desc" id="descCursor"></p>
+      <div class="meta" id="metaCursor"></div>
+      <div class="stats">
+        <div class="stat"><strong id="verCursor">-</strong><span>версия</span></div>
+        <div class="stat"><strong id="starsCursor">-</strong><span>stars</span></div>
+        <div class="stat"><strong id="forksCursor">-</strong><span>forks</span></div>
+        <div class="stat"><strong id="issuesCursor">-</strong><span>issues</span></div>
+      </div>
     </section>
 
     <section class="card">
-      <h2>Быстрый старт · Claude</h2>
-      <pre class="install"># скопировать skills/bus из репозитория bus-claude → ~/.claude/skills/bus</pre>
+      <h2>Возможности</h2>
+      <ul class="features">
+        <li><b>Лента диалогов</b> - агенты слева, вложения и <code>@</code>-файлы проекта</li>
+        <li><b>Канбан</b> - столбцы с агентами, перетаскивание задач, verify-цикл с проверяющим</li>
+        <li><b>Фоновые агенты</b> - подъём через <code>agent -p</code>, живой ход, stop / resume</li>
+        <li><b>Роли</b> - создание и правка агентов, доступ по галочкам, «Переписать с ИИ»</li>
+        <li><b>Расписание</b> - cron-задачи для агентов</li>
+        <li><b>Лимиты Cursor</b> - расход и даты сброса в шапке</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Быстрый старт</h2>
+      <pre class="install"># Windows (PowerShell)
+git clone https://github.com/two-vibecoders/bus-cursor.git "$env:USERPROFILE\.cursor\skills\bus-cursor"
+& "$env:USERPROFILE\.cursor\skills\bus-cursor\install.ps1"
+
+# macOS / Linux
+git clone https://github.com/two-vibecoders/bus-cursor.git ~/.cursor/skills/bus-cursor
+~/.cursor/skills/bus-cursor/install.sh</pre>
     </section>
 
     <footer>
-      Оригинал <a href="https://github.com/jtapes/claude-bus">jtapes/claude-bus</a>
-      · <a href="https://github.com/two-vibecoders/bus-claude">bus-claude</a>
-      · <a href="https://github.com/two-vibecoders/bus-cursor">bus-cursor</a>
+      <a href="https://github.com/two-vibecoders/bus-cursor">bus-cursor</a>
+      · <a href="https://github.com/two-vibecoders">two-vibecoders</a>
       · <a href="https://github.com/SafonovAG">SafonovAG</a>
     </footer>
   </div>
@@ -157,23 +139,23 @@
         return new Intl.DateTimeFormat('ru-RU', { dateStyle: 'medium' }).format(new Date(iso));
       } catch { return iso; }
     };
-    async function fill(slug, ids) {
+    const set = (id, text) => { document.getElementById(id).textContent = text; };
+    (async () => {
       try {
-        const repo = await fetch(`https://api.github.com/repos/two-vibecoders/${slug}`).then((r) => r.json());
+        const repo = await fetch('https://api.github.com/repos/two-vibecoders/bus-cursor').then((r) => r.json());
         if (repo.message) throw new Error(repo.message);
-        document.getElementById(ids.desc).textContent = repo.description || slug;
-        document.getElementById(ids.meta).innerHTML =
-          `<span>язык: <b>${repo.language || '—'}</b></span>` +
-          `<span>обновлён: <b>${fmt(repo.updated_at)}</b></span>`;
-        document.getElementById(ids.stars).textContent = repo.stargazers_count;
-        document.getElementById(ids.forks).textContent = repo.forks_count;
-        document.getElementById(ids.issues).textContent = repo.open_issues_count;
+        document.getElementById('metaCursor').innerHTML =
+          `<span>язык: <b>${repo.language || '-'}</b></span>` +
+          `<span>обновлён: <b>${fmt(repo.pushed_at || repo.updated_at)}</b></span>`;
+        set('starsCursor', repo.stargazers_count);
+        set('forksCursor', repo.forks_count);
+        set('issuesCursor', repo.open_issues_count);
+        const release = await fetch('https://api.github.com/repos/two-vibecoders/bus-cursor/releases/latest').then((r) => r.json());
+        if (release.tag_name) set('verCursor', release.tag_name);
       } catch (e) {
-        document.getElementById(ids.desc).innerHTML = `<span class="err">${e.message}</span>`;
+        document.getElementById('descCursor').innerHTML = `<span class="err">${e.message}</span>`;
       }
-    }
-    fill('bus-claude', { desc: 'descClaude', meta: 'metaClaude', stars: 'starsClaude', forks: 'forksClaude', issues: 'issuesClaude' });
-    fill('bus-cursor', { desc: 'descCursor', meta: 'metaCursor', stars: 'starsCursor', forks: 'forksCursor', issues: 'issuesCursor' });
+    })();
   </script>
 </body>
 </html>
